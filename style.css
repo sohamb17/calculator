@@ -1,5 +1,5 @@
 #container {
-    height: 580px;
+    height: 680px;
     width: 510px;
     margin: 50px auto;
     padding-top: 30px;
@@ -38,8 +38,13 @@ button:active {
     transform: scale(0.9);
 }
 
+button:disabled:hover {
+    opacity: 1.0;
+    cursor: not-allowed;
+}
+
 #buttons-container {
-    height: 450px;
+    height: 550px;
     width: 500px;
     text-align: center;
     margin: 30px auto;

@@ -1,13 +1,13 @@
 function add(a, b) {
-    return a + b;
+    return Math.round((a + b) * 1000000) / 1000000;
 }
 
 function subtract(a, b) {
-    return a - b;
+    return Math.round((a - b) * 1000000) / 1000000;
 }
 
 function multiply(a, b) {
-    return a * b;
+    return Math.round((a * b) * 1000000) / 1000000;
 }
 
 function divide(a, b) {
@@ -33,6 +33,7 @@ function operate(a, operator, b) {
 const buttonsContainer = document.querySelector('#buttons-container');
 const buttons = buttonsContainer.querySelectorAll('button');
 const display = document.querySelector('#display');
+const decimal = document.querySelector('#decimal');
 let firstOperand = '';
 let operator = '';
 let secondOperand = '';
@@ -46,7 +47,10 @@ buttons.forEach(button => {
             if(button.textContent !== '=') {
                 display.value += button.textContent;
             }
-            if(button.textContent >=0 && button.textContent <= 9) {
+            if((button.textContent >=0 && button.textContent <= 9) || button.textContent === '.') {
+                if(button.textContent === '.') {
+                    button.disabled = true;
+                }
                 if(!operator) {
                     firstOperand += button.textContent;
                 } else if(operator === '=') {
@@ -57,19 +61,20 @@ buttons.forEach(button => {
                     secondOperand += button.textContent;
                 }
             } else {
+                decimal.disabled = false;
                 if(button.textContent === '+' || button.textContent === '-' || button.textContent === '*' || button.textContent === '/') {
                     if(!secondOperand) {
                         operator = button.textContent;
                     } else {
-                        display.value = operate(parseInt(firstOperand), operator, parseInt(secondOperand));
+                        display.value = operate(parseFloat(firstOperand), operator, parseFloat(secondOperand));
                         display.value += button.textContent;
-                        firstOperand = operate(parseInt(firstOperand), operator, parseInt(secondOperand));
+                        firstOperand = operate(parseFloat(firstOperand), operator, parseFloat(secondOperand));
                         operator = button.textContent;
                         secondOperand = '';
                     }
                 } else if(button.textContent === '=' && firstOperand && secondOperand) {
-                    display.value = operate(parseInt(firstOperand), operator, parseInt(secondOperand));
-                    firstOperand = operate(parseInt(firstOperand), operator, parseInt(secondOperand));
+                    display.value = operate(parseFloat(firstOperand), operator, parseFloat(secondOperand));
+                    firstOperand = operate(parseFloat(firstOperand), operator, parseFloat(secondOperand));
                     operator = '=';
                     secondOperand = '';
                 } else if(button.textContent === '=' && firstOperand && operator){
@@ -85,6 +90,7 @@ buttons.forEach(button => {
             firstOperand = '';
             operator = '';
             secondOperand = '';
+            decimal.disabled = false;
         }
     });
 });
