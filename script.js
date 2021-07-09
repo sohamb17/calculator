@@ -34,11 +34,24 @@ const buttonsContainer = document.querySelector('#buttons-container');
 const buttons = buttonsContainer.querySelectorAll('button');
 const display = document.querySelector('#display');
 const decimal = document.querySelector('#decimal');
+const operators = document.querySelectorAll('.operator')
+
 let firstOperand = '';
 let operator = '';
 let secondOperand = '';
+let operatorsDisabled = true;
+
+operators.forEach(operator => {
+    if(!firstOperand) {
+        operator.disabled = true;
+    }
+    operatorsDisabled = true;
+});
+
 buttons.forEach(button => {
     button.addEventListener('click', () => {
+        operators.forEach(operator => operator.disabled = false);
+        operatorsDisabled = false;
         if(display.value === 'Syntax Error') {
             display.value = '';
             firstOperand = '';
@@ -66,6 +79,12 @@ buttons.forEach(button => {
                     }
                     secondOperand = secondOperand.substring(0, secondOperand.length - 1);
                 }
+                operators.forEach(operator => {
+                    if(!firstOperand) {
+                        operator.disabled = true;
+                    }
+                    operatorsDisabled = true;
+                });
             } else {
                 if(button.textContent !== '=') {
                     display.value += button.textContent;
@@ -115,96 +134,110 @@ buttons.forEach(button => {
             operator = '';
             secondOperand = '';
             decimal.disabled = false;
+            operators.forEach(operator => operator.disabled = true);
+            operatorsDisabled = true;
         }
     });
 });
 
 display.addEventListener('keydown', (e) => {
-   if(e.key === '=' || e.key === 'Enter' || e.key === 'C' || e.key === 'X' || e.key === 'Backspace' || (e.key === '.' && decimal.disabled)) {
+   if(e.key === '=' || e.key === 'Enter' || e.key === 'C' || e.key === 'X' || e.key === 'Backspace' || (e.key === '.' && decimal.disabled) || (!firstOperand && (e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/') && operatorsDisabled)) {
        e.preventDefault();
    } 
 });
 
 display.addEventListener('keydown', (e) => {
-    if(display.value === 'Syntax Error') {
-        display.value = '';
-        firstOperand = '';
-        display.setAttribute('style', 'text-align: end');
-    }
-    if(e.key !== 'C') {
-        if(e.key === 'X' || e.key === 'Backspace') {
-            display.value = display.value.substring(0, display.value.length - 1);
-            if(!operator) {
-                if(firstOperand[firstOperand.length - 1] === '.') {
-                    decimal.disabled = false;
-                }
-                firstOperand = firstOperand.substring(0, firstOperand.length - 1);
-            } else if(operator === '=') {
-                if(`${firstOperand}`[`${firstOperand}`.length - 1] === '.') {
-                    decimal.disabled = false;
-                }
-                firstOperand = `${firstOperand}`.substring(0, `${firstOperand}`.length - 1);
-                operator = '';
-            } else if(!secondOperand) {
-                operator = ''
-            } else {
-                if(secondOperand[secondOperand.length - 1] === '.') {
-                    decimal.disabled = false;
-                }
-                secondOperand = secondOperand.substring(0, secondOperand.length - 1);
-            }
-        } else {
-            if((e.key >= '0' && e.key <= '9') || e.key === '.') {
-                if(e.key === '.' && !decimal.disabled) {
-                    decimal.disabled = true;
-                    if(!operator) {
-                        firstOperand += e.key;
-                    } else {
-                        secondOperand += e.key;
+    if(firstOperand || !(e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/')) {
+        operators.forEach(operator => operator.disabled = false);
+        operatorsDisabled = false;
+        if(display.value === 'Syntax Error') {
+            display.value = '';
+            firstOperand = '';
+            display.setAttribute('style', 'text-align: end');
+        }
+        if(e.key !== 'C') {
+            if(e.key === 'X' || e.key === 'Backspace') {
+                display.value = display.value.substring(0, display.value.length - 1);
+                if(!operator) {
+                    if(firstOperand[firstOperand.length - 1] === '.') {
+                        decimal.disabled = false;
                     }
-                }
-                if(!decimal.disabled || e.key !== '.') {
-                    if(!operator) {
-                        firstOperand += e.key;
-                    } else if(operator === '=') {
-                        display.value = '';
-                        firstOperand = e.key;
-                        operator = '';
-                    } else {
-                        secondOperand += e.key;
+                    firstOperand = firstOperand.substring(0, firstOperand.length - 1);
+                } else if(operator === '=') {
+                    if(`${firstOperand}`[`${firstOperand}`.length - 1] === '.') {
+                        decimal.disabled = false;
                     }
+                    firstOperand = `${firstOperand}`.substring(0, `${firstOperand}`.length - 1);
+                    operator = '';
+                } else if(!secondOperand) {
+                    operator = ''
+                } else {
+                    if(secondOperand[secondOperand.length - 1] === '.') {
+                        decimal.disabled = false;
+                    }
+                    secondOperand = secondOperand.substring(0, secondOperand.length - 1);
                 }
+                operators.forEach(operator => {
+                    if(!firstOperand) {
+                        operator.disabled = true;
+                    }
+                    operatorsDisabled = true;
+                });
             } else {
-                decimal.disabled = false;
-                if(e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/') {
-                    if(!secondOperand) {
-                        operator = e.key;
-                    } else {
+                if((e.key >= '0' && e.key <= '9') || e.key === '.') {
+                    if(e.key === '.' && !decimal.disabled) {
+                        decimal.disabled = true;
+                        if(!operator) {
+                            firstOperand += e.key;
+                        } else {
+                            secondOperand += e.key;
+                        }
+                    }
+                    if(!decimal.disabled || e.key !== '.') {
+                        if(!operator) {
+                            firstOperand += e.key;
+                        } else if(operator === '=') {
+                            display.value = '';
+                            firstOperand = e.key;
+                            operator = '';
+                        } else {
+                            secondOperand += e.key;
+                        }
+                    }
+                } else {
+                    decimal.disabled = false;
+                    if((e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/') && !operatorsDisabled) {
+                        if(!secondOperand) {
+                            operator = e.key;
+                        } else {
+                            display.value = operate(parseFloat(firstOperand), operator, parseFloat(secondOperand));
+                            // display.value += e.key;
+                            firstOperand = operate(parseFloat(firstOperand), operator, parseFloat(secondOperand));
+                            operator = e.key;
+                            secondOperand = '';
+                        }
+                    } else if((e.key === '=' || e.key === 'Enter') && firstOperand && secondOperand) {
                         display.value = operate(parseFloat(firstOperand), operator, parseFloat(secondOperand));
-                        // display.value += e.key;
                         firstOperand = operate(parseFloat(firstOperand), operator, parseFloat(secondOperand));
-                        operator = e.key;
+                        operator = '=';
+                        secondOperand = '';
+                    } else if((e.key === '=' || e.key === 'Enter') && firstOperand && operator){
+                        display.value = 'Syntax Error';
+                        display.setAttribute('style', 'text-align: center;');
+                        firstOperand = '';
+                        operator = '';
                         secondOperand = '';
                     }
-                } else if((e.key === '=' || e.key === 'Enter') && firstOperand && secondOperand) {
-                    display.value = operate(parseFloat(firstOperand), operator, parseFloat(secondOperand));
-                    firstOperand = operate(parseFloat(firstOperand), operator, parseFloat(secondOperand));
-                    operator = '=';
-                    secondOperand = '';
-                } else if((e.key === '=' || e.key === 'Enter') && firstOperand && operator){
-                    display.value = 'Syntax Error';
-                    display.setAttribute('style', 'text-align: center;');
-                    firstOperand = '';
-                    operator = '';
-                    secondOperand = '';
                 }
             }
+        } else {
+            display.value = '';
+            firstOperand = '';
+            operator = '';
+            secondOperand = '';
+            decimal.disabled = false;
+            operators.forEach(operator => operator.disabled = true);
+            operatorsDisabled = true;
         }
-    } else {
-        display.value = '';
-        firstOperand = '';
-        operator = '';
-        secondOperand = '';
-        decimal.disabled = false;
     }
 });
