@@ -1,6 +1,6 @@
 #container {
-    height: 680px;
-    width: 510px;
+    height: 490px;
+    width: 370px;
     margin: 50px auto;
     padding-top: 30px;
     border-radius: 10px;
@@ -8,11 +8,11 @@
 }
 
 #display {
-    height: 80px;
-    width: 435px;
+    height: 70px;
+    width: 335px;
     display: block;
     margin: auto;
-    font-size: 60px;
+    font-size: 55px;
     background-color: turquoise;
     text-align: right;
     border-radius: 10px;
@@ -20,18 +20,19 @@
 }
 
 button {
-    height: 100px;
-    width: 100px;
+    height: 70px;
+    width: 70px;
     margin: 5px;
-    font-size: 40px;
+    font-size: 35px;
     border-radius: 50%;
     border: none;
-    background-color: rgb(240, 240, 240);
+    background-color: white;
     cursor: pointer;
 }
 
 button:hover {
     opacity: 0.8;
+    transform: scale(1.05);
 }
 
 button:active {
@@ -40,12 +41,13 @@ button:active {
 
 button:disabled:hover {
     opacity: 1.0;
-    cursor: not-allowed;
+    transform: none;
+    cursor: default;
 }
 
 #buttons-container {
-    height: 550px;
-    width: 500px;
+    height: 350px;
+    width: 100%;
     text-align: center;
-    margin: 30px auto;
+    margin: 10px auto;
 }
