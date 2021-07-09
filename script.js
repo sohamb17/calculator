@@ -13,6 +13,8 @@ function multiply(a, b) {
 function divide(a, b) {
     if(b === 0) {
         display.setAttribute('style', 'text-align: center');
+        operators.forEach(operator => operator.disabled = true);
+        operatorsDisabled = true;
         return 'Syntax Error';
     }
     return Math.round((a / b) * 1000000) / 1000000;
@@ -101,17 +103,23 @@ buttons.forEach(button => {
                         operator = '';
                     } else {
                         secondOperand += button.textContent;
+                        operators.forEach(operator => operator.disabled = false);
+                        operatorsDisabled = false;
                     }
                 } else {
                     decimal.disabled = false;
                     if(button.textContent === '+' || button.textContent === '-' || button.textContent === '*' || button.textContent === '/') {
                         if(!secondOperand) {
                             operator = button.textContent;
+                            operators.forEach(operator => operator.disabled = true);
+                            operatorsDisabled = true;
                         } else {
                             display.value = operate(parseFloat(firstOperand), operator, parseFloat(secondOperand));
                             display.value += button.textContent;
                             firstOperand = operate(parseFloat(firstOperand), operator, parseFloat(secondOperand));
                             operator = button.textContent;
+                            operators.forEach(operator => operator.disabled = true);
+                            operatorsDisabled = true;
                             secondOperand = '';
                         }
                     } else if(button.textContent === '=' && firstOperand && secondOperand) {
@@ -124,7 +132,10 @@ buttons.forEach(button => {
                         display.setAttribute('style', 'text-align: center;');
                         firstOperand = '';
                         operator = '';
+                        operators.forEach(operator => operator.disabled = true);
+                        operatorsDisabled = true;
                         secondOperand = '';
+                        
                     }
                 }
             }
@@ -141,7 +152,7 @@ buttons.forEach(button => {
 });
 
 display.addEventListener('keydown', (e) => {
-   if(e.key === '=' || e.key === 'Enter' || e.key === 'C' || e.key === 'X' || e.key === 'Backspace' || (e.key === '.' && decimal.disabled) || (!firstOperand && (e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/') && operatorsDisabled)) {
+   if(e.key === '=' || e.key === 'Enter' || e.key === 'C' || e.key === 'X' || e.key === 'Backspace' || (e.key === '.' && decimal.disabled) || ((e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/') && operatorsDisabled)) {
        e.preventDefault();
    } 
 });
@@ -191,6 +202,8 @@ display.addEventListener('keydown', (e) => {
                             firstOperand += e.key;
                         } else {
                             secondOperand += e.key;
+                            operators.forEach(operator => operator.disabled = false);
+                            operatorsDisabled = false;
                         }
                     }
                     if(!decimal.disabled || e.key !== '.') {
@@ -202,6 +215,8 @@ display.addEventListener('keydown', (e) => {
                             operator = '';
                         } else {
                             secondOperand += e.key;
+                            operators.forEach(operator => operator.disabled = false);
+                            operatorsDisabled = false;
                         }
                     }
                 } else {
@@ -209,11 +224,15 @@ display.addEventListener('keydown', (e) => {
                     if((e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/') && !operatorsDisabled) {
                         if(!secondOperand) {
                             operator = e.key;
+                            operators.forEach(operator => operator.disabled = true);
+                            operatorsDisabled = true;
                         } else {
                             display.value = operate(parseFloat(firstOperand), operator, parseFloat(secondOperand));
                             // display.value += e.key;
                             firstOperand = operate(parseFloat(firstOperand), operator, parseFloat(secondOperand));
                             operator = e.key;
+                            operators.forEach(operator => operator.disabled = true);
+                            operatorsDisabled = true;
                             secondOperand = '';
                         }
                     } else if((e.key === '=' || e.key === 'Enter') && firstOperand && secondOperand) {
@@ -226,6 +245,8 @@ display.addEventListener('keydown', (e) => {
                         display.setAttribute('style', 'text-align: center;');
                         firstOperand = '';
                         operator = '';
+                        operators.forEach(operator => operator.disabled = true);
+                        operatorsDisabled = true;
                         secondOperand = '';
                     }
                 }
