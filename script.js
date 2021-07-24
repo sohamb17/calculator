@@ -125,7 +125,9 @@ buttons.forEach(button => {
                         operatorsDisabled = false;
                     }
                 } else {
-                    decimal.disabled = false;
+                    if(button.textContent !== '=' || !firstOperand || secondOperand) {
+                        decimal.disabled = false;
+                    }
                     if(button.textContent === '+' || button.textContent === '-' || button.textContent === '*' || button.textContent === '/') {
                         if(!secondOperand) {
                             operator = button.textContent;
@@ -153,7 +155,6 @@ buttons.forEach(button => {
                         operators.forEach(operator => operator.disabled = true);
                         operatorsDisabled = true;
                         secondOperand = '';
-                        
                     }
                 }
             }
