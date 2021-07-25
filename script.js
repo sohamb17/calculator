@@ -255,7 +255,9 @@ display.addEventListener('keydown', (e) => {
                             }
                         }
                     } else {
-                        decimal.disabled = false;
+                        if(e.key !== '=' || !firstOperand || secondOperand) {
+                            decimal.disabled = false;
+                        }
                         if((e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/') && !operatorsDisabled) {
                             if(!secondOperand) {
                                 operator = e.key;
